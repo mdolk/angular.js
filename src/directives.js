@@ -484,24 +484,45 @@ angularDirective("ng:bind-attr", function(expression){
      </doc:scenario>
    </doc:example>
  */
+angularDirective("ng:click", ngMouseEvent('click'));
+
+angularDirective("ng:mousedown", ngMouseEvent('mousedown'));
+angularDirective("ng:mouseup", ngMouseEvent('mouseup'));
+angularDirective("ng:dblclick", ngMouseEvent('dblclick'));
+angularDirective("ng:mouseover", ngMouseEvent('mouseover'));
+angularDirective("ng:mouseout", ngMouseEvent('mouseout'));
+
 /*
- * A directive that allows creation of custom onclick handlers that are defined as angular
- * expressions and are compiled and executed within the current scope.
- *
- * Events that are handled via these handler are always configured not to propagate further.
- *
+ * Events that are handled via these handlers are always configured not to propagate further.
  * TODO: maybe we should consider allowing users to control event propagation in the future.
  */
-angularDirective("ng:click", function(expression, element){
-  return function(element){
-    var self = this;
-    element.bind('click', function(event){
-      self.$apply(expression);
-      event.stopPropagation();
-    });
+function ngMouseEvent(name) {
+  return function(expression, element) {
+    var match = expression.match(/^(?:\s*(.*)\s+!\s+)?(.*)$/),
+        bang, expr;
+    if (!match) {
+      throw Error("Expected expression in form of '_event_ ! _expression_' but got '" +
+      expression + "'.");
+    }
+    bang = match[1];
+	expr = match[2];
+    return function(element){
+      var scope = this;
+      element.bind(name, function(event) {
+        if (bang) {
+          // TODO: Ugly to add bang to scope, find better way to pass to $apply
+          var old = scope[bang];
+          scope[bang] = event;
+		  scope.$apply(expr);
+		  scope[bang] = old;
+		} else {
+          scope.$apply(expr);
+        }
+        event.stopPropagation();
+      });
+    };
   };
-});
-
+}
 
 /**
  * @workInProgress

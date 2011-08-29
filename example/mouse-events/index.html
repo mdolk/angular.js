@@ -1,0 +1,33 @@
+<!doctype html>
+<html xmlns:ng="http://angularjs.org">
+	<head>
+		<script src="../../build/angular.js" ng:autobind></script>
+		<style>
+			div {
+				border: 1px solid black;
+				margin: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div ng:click="click = click + 1" ng:init="click=0">
+			click: {{click}}
+		</div>
+		<div ng:dblclick="dblclick = dblclick + 1" ng:init="dblclick=0">
+			dblclick: {{dblclick}}
+		</div>
+		<div ng:mousedown="mousedown = mousedown + 1" ng:mouseup="mouseup = mouseup + 1" ng:init="mousedown=0; mouseup=0;">
+			mousedown: {{mousedown}} <br>
+			mouseup: {{mouseup}}
+		</div>
+		<div ng:mouseover="mouseover = mouseover + 1" ng:mouseout="mouseout = mouseout + 1" ng:init="mouseover=0; mouseout=0;">
+			mouseover: {{mouseover}} <br>
+			mouseout: {{mouseout}}
+		</div>
+
+		<div ng:click="e ! event = e">
+			click bang event
+			<pre>{{event}}</pre>
+		</div>
+	</body>
+</html>

@@ -147,6 +147,15 @@ describe("directive", function(){
       expect(scope.clicked).toEqual(true);
     });
 
+    it('should bang the event to expression', function(){
+      var scope = compile('<div ng:click="e ! savedEvent = e"></div>');
+      scope.$digest();
+      expect(scope.savedEvent).not.toBeDefined();
+
+      browserTrigger(element, 'click');
+      expect(scope.savedEvent).toBeDefined();
+    });
+
     it('should stop event propagation', function() {
       var scope = compile('<div ng:click="outer = true"><div ng:click="inner = true"></div></div>');
       scope.$digest();
